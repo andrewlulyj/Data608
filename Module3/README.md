@@ -1,4 +1,4 @@
-I used the following library\n
+I used the following library
 library(shiny)
 library(ggplot2)
 library(dplyr)

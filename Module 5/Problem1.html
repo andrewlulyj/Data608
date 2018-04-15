@@ -1,0 +1,82 @@
+<html>
+
+
+
+<head><title>Module 5 </title></head>
+
+<body>
+
+<h1>Beginner Homework</h1>
+<h2>Create A Reserse Function</h2>
+
+
+
+<script type="text/javascript">
+document.write('<br><p><b>please input a word')
+// Basic functions
+function reverseString(str) {
+    var splitString = str.split(""); 
+    var reverseArray = splitString.reverse();
+    var joinArray = reverseArray.join(""); 
+    return joinArray; 
+};
+function calc(){
+    var t = document.getElementById("target");
+    t.innerHTML = reverseString(document.getElementById('str').value);
+}
+</script>
+<p>
+<form>
+    <input id="str" type="text">
+    <input type="button" value="check" onClick="calc();">
+</form>
+</p>
+
+<div id="target"></div>
+
+
+<h2>Create A Table</h2>
+
+<script type="text/javascript">
+document.write('<br><p><b>enter a number')
+// Basic functions
+function createtable(i) {
+    var c;
+    var text = 	'<table>'
+	for ( c = 1 ; c <21; c++) {
+	if (c == 1 || c == 5 || c ==9 || c == 13 || c == 17){
+		text = text.concat('<tr><td>');
+		var n = c*i
+		text= text.concat(n.toString());
+		text = text.concat('</td>');}
+	else if (c == 4 || c == 8 || c == 12 || c == 16 || c == 20){
+	    text = text.concat('<td>');
+		var n = c*i
+		text= text.concat(n.toString());
+		text = text.concat('</td></tr>');}
+    else {
+	    text = text.concat('<td>');
+		var n = c*i
+		text= text.concat(n.toString());
+		text = text.concat('</td>');}
+	}
+	text = text.concat('</table>');
+    return text; 
+};
+function calc2(){
+    var t = document.getElementById("target2");
+    t.innerHTML = createtable(document.getElementById('str2').value);
+}
+</script>
+<p>
+<form>
+    <input id="str2" type="number">
+    <input type="button" value="check" onClick="calc2();">
+</form>
+</p>
+
+<div id="target2"></div>
+
+
+</body>
+</html>

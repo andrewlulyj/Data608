@@ -1,0 +1,87 @@
+---
+title: "module6"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+library(ggplot2)
+data <- 'C:/Users/andre/Downloads/test.txt'
+US_trade<-read.table(data,sep="\t",head=TRUE )
+data2 <- 'C:/Users/andre/Downloads/test2.txt'
+by_country<-read.table(data2,sep="\t",head=TRUE)
+by_country_balance<-by_country[2:21,1:10]
+by_country_export<-by_country[23:42,1:10]
+by_country_import<-by_country[44:63,1:10]
+US_trade$order<-1:26
+US_trade
+```
+
+```{r}
+p<-ggplot(US_trade, aes(x=reorder(Period, order), y=Balance.Total,group=1)) + geom_line(aes( colour = "Total")) + geom_point() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+p<-p+geom_line(aes(y = Balance.Services, colour = "Service")) + geom_point(aes(y = Balance.Services, colour = "Service")) 
+p<-p+geom_line(aes(y = Balance.Goods, colour = "Good")) + geom_point(aes(y = Balance.Goods, colour = "Good"))
+p<-p + ylab("Balance")+xlab("Period") + ggtitle("US Trade Balance, Good VS Service") + scale_colour_manual(values=c("red","green","blue"))
+p
+```
+```{r}
+library(dplyr)
+library(tidyr)
+China_Balance<-by_country_balance %>%
+filter(Country.and.Area == "China") %>%
+gather("Period",Balance,2:10) %>%
+filter(Period != "Year.to.Date.2017") %>%
+filter( Period != "Year.to.Date.2018" )
+China_Balance$order <- c(7,6,1,2,3,4,5)
+
+
+China_import<-by_country_import %>%
+filter(Country.and.Area == "China") %>%
+gather("Period",Import,2:10) %>%
+filter(Period != "Year.to.Date.2017") %>%
+filter( Period != "Year.to.Date.2018" )
+China_import$order <- c(7,6,1,2,3,4,5)
+
+
+China_export<-by_country_export %>%
+filter(Country.and.Area == "China") %>%
+gather("Period",Export,2:10) %>%
+filter(Period != "Year.to.Date.2017") %>%
+filter( Period != "Year.to.Date.2018" )
+China_export$order <- c(7,6,1,2,3,4,5)
+
+China_Balance$Import <- China_import$Import
+China_Balance$Export <- China_export$Export
+
+p<-ggplot(China_Balance, aes(x=reorder(Period, order), y=Balance,group=1)) + geom_line(aes( colour = "Total")) + geom_point() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + xlab("Period") + ggtitle("US Trade Import Export from China ")  
+p<- p+geom_line(aes(y = Import, colour = "Import")) + geom_point(aes(y = Import, colour = "Import"))
+p<-p+geom_line(aes(y = Export, colour = "Export")) + geom_point(aes(y = Export, colour = "Export")) + scale_colour_manual(values=c("red","green","blue"))
+p
+```
+```{r}
+balance<-by_country_balance %>%
+gather("Period",Balance,2:10) %>%
+filter(Period != "Year.to.Date.2017") %>%
+filter( Period != "Year.to.Date.2018" )
+order<-select(China_Balance,order,Period)
+balance<-left_join(balance,order, "Period")
+ggplot(balance, aes(x=reorder(Period, order), y=Balance,group=Country.and.Area)) + geom_line(aes( colour = Country.and.Area)) +  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + ylab("Balance")+xlab("Period") + ggtitle("US Trade Balance By Country") 
+```
+```{r}
+t<-balance %>%
+group_by(Period) %>%
+summarise(Total = sum(Balance)) 
+rat<-right_join(t,balance,"Period")%>%
+mutate(ratio = Balance/Total)
+ggplot(rat, aes(fill=Period, y=ratio, x=Country.and.Area)) + 
+geom_bar(position="dodge", stat="identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + ggtitle("US Trade Balance Contirbution By Country") 
+
+```
+

@@ -2,7 +2,7 @@ library(shinydashboard)
 library(shiny)
 library(ggplot2)
 library(dplyr)
-
+library(tidyr)
 data <- 'https://raw.githubusercontent.com/andrewlulyj/Data608/master/Module6/test.txt'
 US_trade<-read.table(data,sep="\t",head=TRUE )
 data2 <- 'https://raw.githubusercontent.com/andrewlulyj/Data608/master/Module6/test2.txt'
